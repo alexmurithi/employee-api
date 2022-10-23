@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping(path = "/api/v1")
 public class EmployeeController {
     @Autowired
@@ -34,5 +34,19 @@ public class EmployeeController {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Employee does not exist with id: "+ id));
         return ResponseEntity.ok(employee);
+    }
+
+    // UPDATE EMPLOYEE
+    @PutMapping (path = "employees/{id}")
+    public ResponseEntity <Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employeeRequest){
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Employee does not exist with id: "+ id));
+        employee.setFirstName(employeeRequest.getFirstName());
+        employee.setLastName(employeeRequest.getLastName());
+        employee.setEmailId(employeeRequest.getEmailId());
+
+        Employee updatedEmployee = employeeRepository.save(employee);
+
+        return ResponseEntity.ok(updatedEmployee);
     }
 }
